@@ -1,32 +1,17 @@
-import { ActionPanel, Action, Icon, List } from "@raycast/api";
-
-const ITEMS = Array.from(Array(3).keys()).map((key) => {
-  return {
-    id: key,
-    icon: Icon.Bird,
-    title: "Title " + key,
-    subtitle: "Subtitle",
-    accessory: "Accessory",
-  };
-});
+import { Grid } from "@raycast/api";
+import { BASE_URL } from "./core/constants";
+import { templates } from "./core/templates";
 
 export default function Command() {
   return (
-    <List>
-      {ITEMS.map((item) => (
-        <List.Item
-          key={item.id}
-          icon={item.icon}
-          title={item.title}
-          subtitle={item.subtitle}
-          accessories={[{ icon: Icon.Text, text: item.accessory }]}
-          actions={
-            <ActionPanel>
-              <Action.CopyToClipboard content={item.title} />
-            </ActionPanel>
-          }
-        />
+    <Grid inset={Grid.Inset.Small} columns={6}>
+      {Object.entries(templates).map(([category, formulas]) => (
+        <Grid.Section key={category} title={category}>
+          {Object.entries(formulas).map(([name, latex]) => (
+            <Grid.Item key={name} content={`${BASE_URL}?\\color{White}${latex}`} title={name} />
+          ))}
+        </Grid.Section>
       ))}
-    </List>
+    </Grid>
   );
 }
