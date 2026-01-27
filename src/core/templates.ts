@@ -1,29 +1,29 @@
-import accents from "../../assets/formula_data/accents.json";
-import brackets from "../../assets/formula_data/brackets.json";
-import complexNumbers from "../../assets/formula_data/complex_numbers.json";
-import derivatives from "../../assets/formula_data/derivatives.json";
-import displayFormats from "../../assets/formula_data/display_formats.json";
-import fontsSizes from "../../assets/formula_data/fonts_sizes.json";
-import fractions from "../../assets/formula_data/fractions.json";
-import greekLowercase from "../../assets/formula_data/greek_lowercase.json";
-import greekUppercase from "../../assets/formula_data/greek_uppercase.json";
-import integrals from "../../assets/formula_data/integrals.json";
-import limits from "../../assets/formula_data/limits.json";
-import logic from "../../assets/formula_data/logic.json";
-import matrices from "../../assets/formula_data/matrices.json";
-import operators from "../../assets/formula_data/operators.json";
-import permutationsCombinations from "../../assets/formula_data/permutations_combinations.json";
-import powersExponentsLogarithms from "../../assets/formula_data/powers_exponents_logarithms.json";
-import sets from "../../assets/formula_data/sets.json";
-import spacing from "../../assets/formula_data/spacing.json";
-import specialCharacters from "../../assets/formula_data/special_characters.json";
-import summationProduct from "../../assets/formula_data/summation_product.json";
-import trigonometry from "../../assets/formula_data/trigonometry.json";
-import vectors from "../../assets/formula_data/vectors.json";
+import accents from "../../assets/equation_templates/accents.json";
+import brackets from "../../assets/equation_templates/brackets.json";
+import complexNumbers from "../../assets/equation_templates/complex_numbers.json";
+import derivatives from "../../assets/equation_templates/derivatives.json";
+import displayFormats from "../../assets/equation_templates/display_formats.json";
+import fontsSizes from "../../assets/equation_templates/fonts_sizes.json";
+import fractions from "../../assets/equation_templates/fractions.json";
+import greekLowercase from "../../assets/equation_templates/greek_lowercase.json";
+import greekUppercase from "../../assets/equation_templates/greek_uppercase.json";
+import integrals from "../../assets/equation_templates/integrals.json";
+import limits from "../../assets/equation_templates/limits.json";
+import logic from "../../assets/equation_templates/logic.json";
+import matrices from "../../assets/equation_templates/matrices.json";
+import operators from "../../assets/equation_templates/operators.json";
+import permutationsCombinations from "../../assets/equation_templates/permutations_combinations.json";
+import powersExponentsLogarithms from "../../assets/equation_templates/powers_exponents_logarithms.json";
+import sets from "../../assets/equation_templates/sets.json";
+import spacing from "../../assets/equation_templates/spacing.json";
+import specialCharacters from "../../assets/equation_templates/special_characters.json";
+import summationProduct from "../../assets/equation_templates/summation_product.json";
+import trigonometry from "../../assets/equation_templates/trigonometry.json";
+import vectors from "../../assets/equation_templates/vectors.json";
 
-type FormulaTemplatesObj = Record<string, Record<string, string>>;
+type EquationTemplatesObj = Record<string, Record<string, string>>;
 
-export const templates: FormulaTemplatesObj = {
+export const templates: EquationTemplatesObj = {
   // Basic structures
   ...fractions,
   ...powersExponentsLogarithms,
