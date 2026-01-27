@@ -4,7 +4,7 @@ import { templates } from "./core/templates";
 
 export default function Command() {
   return (
-    <Grid inset={Grid.Inset.Small} columns={6}>
+    <Grid inset={Grid.Inset.Small} columns={6} searchBarPlaceholder="Search LaTeX Templates">
       {Object.entries(templates).map(([category, formulas]) => (
         <Grid.Section key={category} title={category}>
           {Object.entries(formulas).map(([name, latex]) => (
