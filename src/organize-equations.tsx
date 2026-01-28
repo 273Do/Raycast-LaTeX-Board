@@ -1,7 +1,8 @@
-import { Action, ActionPanel, Color, environment, Grid, Icon } from "@raycast/api";
-import { BASE_URL } from "./core/constants";
+import { Action, ActionPanel, Color, Grid, Icon } from "@raycast/api";
+import { ORGANIZE_GRID_COLUMNS } from "./core/constants";
 import { useState } from "react";
 import { groupByTag } from "./libs/group-by-tag";
+import { useLatex } from "./libs/use-latex";
 
 export type EquationObj = {
   id: string;
@@ -11,15 +12,13 @@ export type EquationObj = {
   favorite: boolean;
 };
 
-const textColor = environment.appearance === "dark" ? "White" : "Black";
-
 const equations: EquationObj[] = [
   {
     id: "0",
     title: "Quadratic Formula",
     latex: "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
     tag: Color.Blue,
-    favorite: true,
+    favorite: false,
   },
   { id: "1", title: "Euler's Identity", latex: "e^{i\\pi} + 1 = 0", tag: Color.Purple, favorite: true },
   { id: "2", title: "Pythagorean Theorem", latex: "a^2 + b^2 = c^2", tag: Color.Green, favorite: false },
@@ -37,7 +36,7 @@ const equations: EquationObj[] = [
     title: "Sum of Arithmetic Series",
     latex: "S_n = \\frac{n(a_1 + a_n)}{2}",
     tag: Color.Blue,
-    favorite: false,
+    favorite: true,
   },
   {
     id: "7",
@@ -86,6 +85,7 @@ const equations: EquationObj[] = [
 
 export default function Command() {
   const [selectedTag, setSelectedTag] = useState<string>("all");
+  const { displayLatexURL } = useLatex();
 
   const groupedEquations = groupByTag(equations);
 
@@ -99,7 +99,7 @@ export default function Command() {
   return (
     <Grid
       inset={Grid.Inset.Small}
-      columns={6}
+      columns={ORGANIZE_GRID_COLUMNS}
       searchBarPlaceholder="Search Equations"
       searchBarAccessory={
         <Grid.Dropdown tooltip="Filter by Tag" onChange={(v) => setSelectedTag(v)} value={selectedTag}>
@@ -126,7 +126,7 @@ export default function Command() {
           {items.map((eq) => (
             <Grid.Item
               key={eq.title}
-              content={`${BASE_URL}?\\color{${textColor}}${eq.latex}`}
+              content={displayLatexURL(eq.latex)}
               title={eq.title}
               accessory={eq.favorite ? { icon: { source: Icon.Heart, tintColor: Color.Magenta } } : undefined}
               actions={
@@ -138,6 +138,7 @@ export default function Command() {
                     title="Duplicate Equation"
                     onAction={() => console.log("Duplicate Equation")}
                   />
+                  <Action icon={Icon.Heart} title="Favorite" onAction={() => console.log("Favorite")} />
                   <Action icon={Icon.Download} title="Export Image" onAction={() => console.log("Export Image")} />
                 </ActionPanel>
               }

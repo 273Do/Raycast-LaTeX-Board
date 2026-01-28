@@ -1,12 +1,13 @@
-import { Action, ActionPanel, environment, Grid, Icon } from "@raycast/api";
-import { BASE_URL } from "./core/constants";
+import { Action, ActionPanel, Grid, Icon } from "@raycast/api";
+import { SEARCH_GRID_COLUMNS } from "./core/constants";
 import { templates } from "./core/templates";
 import { useState } from "react";
-
-const textColor = environment.appearance === "dark" ? "White" : "Black";
+import { useLatex } from "./libs/use-latex";
 
 export default function Command() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const { displayLatexURL } = useLatex();
 
   const filteredTemplates = Object.entries(templates).filter(
     ([cat]) => selectedCategory === "all" || cat === selectedCategory,
@@ -15,7 +16,7 @@ export default function Command() {
   return (
     <Grid
       inset={Grid.Inset.Small}
-      columns={6}
+      columns={SEARCH_GRID_COLUMNS}
       searchBarPlaceholder="Search LaTeX Templates"
       searchBarAccessory={
         <Grid.Dropdown tooltip="Equation Category" onChange={(v) => setSelectedCategory(v)} value={selectedCategory}>
@@ -31,7 +32,7 @@ export default function Command() {
           {Object.entries(equations).map(([name, latex]) => (
             <Grid.Item
               key={name}
-              content={`${BASE_URL}?\\color{${textColor}}${latex}`}
+              content={displayLatexURL(latex)}
               title={name}
               actions={
                 <ActionPanel>
