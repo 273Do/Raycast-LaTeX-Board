@@ -1,5 +1,5 @@
 import { Color } from "@raycast/api";
-import { EquationObj } from "../organize-equations";
+import { EquationObj } from "./use-equation";
 
 export const groupByTag = (items: EquationObj[]): Record<string, EquationObj[]> => {
   return items.reduce(
