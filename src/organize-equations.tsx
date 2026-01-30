@@ -11,10 +11,10 @@ export default function Command() {
 
   const { displayLatexURL } = useLatex();
 
-  const { fetchEquations } = useEquation();
+  const { fetchEquations, deleteEquation, deleteAllEquations } = useEquation();
 
   // Fetch equations with caching
-  const { data: equations = [], isLoading } = useCachedPromise(fetchEquations);
+  const { data: equations = [], isLoading, revalidate } = useCachedPromise(fetchEquations);
 
   const groupedEquations = groupByTag(equations);
 
@@ -24,6 +24,16 @@ export default function Command() {
       : selectedTag === "favorite"
         ? { Favorite: equations.filter((eq) => eq.favorite) }
         : { [selectedTag]: groupedEquations[selectedTag] || [] };
+
+  const handleDelete = async (id: string) => {
+    await deleteEquation(id);
+    revalidate();
+  };
+
+  const handleDeleteAll = async () => {
+    await deleteAllEquations();
+    revalidate();
+  };
 
   return (
     <Grid
@@ -62,14 +72,46 @@ export default function Command() {
               actions={
                 <ActionPanel>
                   <Action.CopyToClipboard title="Copy to Clipboard" content={eq.latex} />
-                  <Action icon={Icon.Pencil} title="Edit Equation" onAction={() => console.log("Edit Equation")} />
+                  <Action
+                    icon={Icon.Pencil}
+                    title="Edit Equation"
+                    shortcut={{ modifiers: ["cmd"], key: "e" }}
+                    onAction={() => console.log("Edit Equation")}
+                  />
                   <Action
                     icon={Icon.Duplicate}
                     title="Duplicate Equation"
+                    shortcut={{ modifiers: ["cmd"], key: "d" }}
                     onAction={() => console.log("Duplicate Equation")}
                   />
-                  <Action icon={Icon.Heart} title="Favorite" onAction={() => console.log("Favorite")} />
-                  <Action icon={Icon.Download} title="Export Image" onAction={() => console.log("Export Image")} />
+                  <Action
+                    icon={Icon.Heart}
+                    title="Favorite"
+                    shortcut={{ modifiers: ["cmd"], key: "f" }}
+                    onAction={() => console.log("Favorite")}
+                  />
+                  <Action
+                    icon={Icon.Download}
+                    title="Export Image"
+                    shortcut={{ modifiers: ["cmd"], key: "l" }}
+                    onAction={() => console.log("Export Image")}
+                  />
+                  <ActionPanel.Section>
+                    <Action
+                      icon={Icon.Trash}
+                      title="Delete Equation"
+                      style={Action.Style.Destructive}
+                      shortcut={{ modifiers: ["cmd"], key: "x" }}
+                      onAction={() => handleDelete(eq.id)}
+                    />
+                    <Action
+                      icon={Icon.Trash}
+                      title="Delete All Equations"
+                      style={Action.Style.Destructive}
+                      shortcut={{ modifiers: ["cmd", "shift"], key: "x" }}
+                      onAction={handleDeleteAll}
+                    />
+                  </ActionPanel.Section>
                 </ActionPanel>
               }
             />

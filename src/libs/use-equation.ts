@@ -13,16 +13,45 @@ export type EquationObj = {
  *
  * @returns
  *   - fetchEquations: Function to fetch the list of equations.
+ *   - deleteEquation: Function to delete an equation by its ID.
+ *   - deleteAllEquations: Function to delete all equations.
  */
 export const useEquation = () => {
+  /**
+   * fetch the list of equations from local storage.
+   */
   const fetchEquations = async (): Promise<EquationObj[]> => {
-    await LocalStorage.setItem("equations", JSON.stringify(demoEquations));
-
     const equations = await LocalStorage.getItem<string>("equations");
-    return equations ? JSON.parse(equations) : [];
+
+    // データが存在しない場合のみ、デモデータで初期化
+    if (!equations) {
+      await LocalStorage.setItem("equations", JSON.stringify(demoEquations));
+      return [];
+    }
+
+    return JSON.parse(equations);
   };
 
-  return { fetchEquations };
+  /**
+   * delete an equation by its ID.
+   */
+  const deleteEquation = async (id: string): Promise<void> => {
+    const equations = await fetchEquations();
+    const updatedEquations = equations.filter((eq) => eq.id !== id);
+
+    console.log("Updated Equations after deletion:", updatedEquations);
+
+    await LocalStorage.setItem("equations", JSON.stringify(updatedEquations));
+  };
+
+  /**
+   * delete all equations.
+   */
+  const deleteAllEquations = async (): Promise<void> => {
+    await LocalStorage.removeItem("equations");
+  };
+
+  return { fetchEquations, deleteEquation, deleteAllEquations };
 };
 
 const demoEquations: EquationObj[] = [
