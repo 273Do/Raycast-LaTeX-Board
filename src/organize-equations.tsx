@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Color, Grid, Icon } from "@raycast/api";
+import { Action, ActionPanel, Color, Grid, Icon, showToast, Toast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { ORGANIZE_GRID_COLUMNS } from "./core/constants";
 import { useState } from "react";
@@ -11,7 +11,7 @@ export default function OrganizeEquations() {
 
   const { displayLatexURL } = useLatex();
 
-  const { fetchEquations, deleteEquation, deleteAllEquations } = useEquation();
+  const { fetchEquations, duplicateEquation, deleteEquation, deleteAllEquations } = useEquation();
 
   // Fetch equations with caching
   const { data: equations = [], isLoading, revalidate } = useCachedPromise(fetchEquations);
@@ -25,14 +25,35 @@ export default function OrganizeEquations() {
         ? { Favorite: equations.filter((eq) => eq.favorite) }
         : { [selectedTag]: groupedEquations[selectedTag] || [] };
 
+  const handleDuplicate = async (id: string) => {
+    await action(duplicateEquation(id), "Equation Duplicated", "Failed to Duplicate Equation");
+  };
+
   const handleDelete = async (id: string) => {
-    await deleteEquation(id);
-    revalidate();
+    await action(deleteEquation(id), "Equation Deleted", "Failed to Delete Equation");
   };
 
   const handleDeleteAll = async () => {
-    await deleteAllEquations();
-    revalidate();
+    await action(deleteAllEquations(), "All Equation Deleted", "Failed to Delete All Equations");
+  };
+
+  const action = async (actionPromise: Promise<void>, successTitle: string, failureTitle: string) => {
+    try {
+      await actionPromise;
+
+      revalidate();
+
+      showToast({
+        style: Toast.Style.Success,
+        title: successTitle,
+      });
+    } catch (error) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: failureTitle,
+        message: String(error),
+      });
+    }
   };
 
   return (
@@ -82,7 +103,7 @@ export default function OrganizeEquations() {
                     icon={Icon.Duplicate}
                     title="Duplicate Equation"
                     shortcut={{ modifiers: ["cmd"], key: "d" }}
-                    onAction={() => console.log("Duplicate Equation")}
+                    onAction={() => handleDuplicate(eq.id)}
                   />
                   <Action
                     icon={Icon.Heart}
