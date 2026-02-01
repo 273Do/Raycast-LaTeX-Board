@@ -2,7 +2,7 @@ import { Action, ActionPanel, Color, Grid, Icon } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { ORGANIZE_GRID_COLUMNS } from "./core/constants";
 import { useState } from "react";
-import { groupByTag } from "./libs/group-by-tag";
+import { groupByTags } from "./libs/group-by-tag";
 import { useLatex } from "./libs/use-latex";
 import { useEquation } from "./libs/use-equation";
 
@@ -16,7 +16,7 @@ export default function Command() {
   // Fetch equations with caching
   const { data: equations = [], isLoading, revalidate } = useCachedPromise(fetchEquations);
 
-  const groupedEquations = groupByTag(equations);
+  const groupedEquations = groupByTags(equations);
 
   const filteredGroups =
     selectedTag === "all"
