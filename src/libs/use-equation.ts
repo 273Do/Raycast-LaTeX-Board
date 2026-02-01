@@ -39,8 +39,6 @@ export const useEquation = () => {
     const equations = await fetchEquations();
     const updatedEquations = equations.filter((eq) => eq.id !== id);
 
-    console.log("Updated Equations after deletion:", updatedEquations);
-
     await LocalStorage.setItem("equations", JSON.stringify(updatedEquations));
   };
 
