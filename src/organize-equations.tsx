@@ -6,7 +6,7 @@ import { groupByTags } from "./libs/group-by-tag";
 import { useLatex } from "./libs/use-latex";
 import { useEquation } from "./libs/use-equation";
 
-export default function Command() {
+export default function OrganizeEquations() {
   const [selectedTag, setSelectedTag] = useState<string>("all");
 
   const { displayLatexURL } = useLatex();

@@ -1,4 +1,5 @@
 import { Color, LocalStorage } from "@raycast/api";
+import { EquationFormValues } from "../create-equation-metadata";
 
 export type EquationObj = {
   id: string;
@@ -13,6 +14,7 @@ export type EquationObj = {
  *
  * @returns
  *   - fetchEquations: Function to fetch the list of equations.
+ *   - createEquation: Function to create a new equation.
  *   - deleteEquation: Function to delete an equation by its ID.
  *   - deleteAllEquations: Function to delete all equations.
  */
@@ -25,7 +27,7 @@ export const useEquation = () => {
 
     // データが存在しない場合のみ、デモデータで初期化
     if (!equations) {
-      await LocalStorage.setItem("equations", JSON.stringify(demoEquations));
+      await saveEquationsToLocalStorage(demoEquations);
       return [];
     }
 
@@ -33,13 +35,42 @@ export const useEquation = () => {
   };
 
   /**
+   * create a new equation and save it to local storage.
+   */
+  const createEquation = async (equation: EquationFormValues): Promise<void> => {
+    const equations = await fetchEquations();
+
+    const { title, latex, tags } = equation;
+
+    // Generate a random ID
+    const id = Date.now()
+      .toString()
+      .split("")
+      .sort(() => 0.5 - Math.random())
+      .join("");
+
+    const newEquation: EquationObj = {
+      id,
+      title,
+      latex,
+      tags,
+      favorite: false,
+    };
+
+    const updatedEquations = [...equations, newEquation];
+
+    await saveEquationsToLocalStorage(updatedEquations);
+  };
+
+  /**
    * delete an equation by its ID.
+   * @param id - The ID of the equation to delete.
    */
   const deleteEquation = async (id: string): Promise<void> => {
     const equations = await fetchEquations();
     const updatedEquations = equations.filter((eq) => eq.id !== id);
 
-    await LocalStorage.setItem("equations", JSON.stringify(updatedEquations));
+    await saveEquationsToLocalStorage(updatedEquations);
   };
 
   /**
@@ -49,7 +80,11 @@ export const useEquation = () => {
     await LocalStorage.removeItem("equations");
   };
 
-  return { fetchEquations, deleteEquation, deleteAllEquations };
+  return { fetchEquations, createEquation, deleteEquation, deleteAllEquations };
+};
+
+const saveEquationsToLocalStorage = async (equations: EquationObj[]) => {
+  await LocalStorage.setItem("equations", JSON.stringify(equations));
 };
 
 const demoEquations: EquationObj[] = [

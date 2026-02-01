@@ -23,11 +23,19 @@
       "subtitle": "LaTeX Board",
       "description": "Create, store, and reuse equations. Copy them as LaTeX or MathML anytime.",
       "mode": "view"
-    },    {
+    }, 
+    {
       "name": "organize-equations",
       "title": "Organize Equations",
       "subtitle": "LaTeX Board",
       "description": "Organize your created equations.",
+      "mode": "view"
+    },
+    {
+      "name": "create-equation",
+      "title": "Create Equation",
+      "subtitle": "LaTeX Board",
+      "description": "Create new equations",
       "mode": "view"
     }
   ],
