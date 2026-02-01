@@ -1,5 +1,6 @@
 import { Color, LocalStorage } from "@raycast/api";
 import { EquationFormValues } from "../create-equation-metadata";
+import { DUPLICATE_SUFFIX } from "../core/constants";
 
 export type EquationObj = {
   id: string;
@@ -15,6 +16,7 @@ export type EquationObj = {
  * @returns
  *   - fetchEquations: Function to fetch the list of equations.
  *   - createEquation: Function to create a new equation.
+ *   - duplicateEquation: Function to duplicate an equation by its ID.
  *   - deleteEquation: Function to delete an equation by its ID.
  *   - deleteAllEquations: Function to delete all equations.
  */
@@ -43,18 +45,45 @@ export const useEquation = () => {
     const { title, latex, tags } = equation;
 
     // Generate a random ID
-    const id = Date.now()
+    const newId = Date.now()
       .toString()
       .split("")
       .sort(() => 0.5 - Math.random())
       .join("");
 
     const newEquation: EquationObj = {
-      id,
+      id: newId,
       title,
       latex,
       tags,
       favorite: false,
+    };
+
+    const updatedEquations = [...equations, newEquation];
+
+    await saveEquationsToLocalStorage(updatedEquations);
+  };
+
+  /**
+   * duplicate an equation by its ID.
+   * @param id - The ID of the equation to duplicate.
+   */
+  const duplicateEquation = async (id: string): Promise<void> => {
+    const equations = await fetchEquations();
+
+    const equation = equations.find((eq) => eq.id === id) as EquationObj;
+
+    // Generate a random ID
+    const newId = Date.now()
+      .toString()
+      .split("")
+      .sort(() => 0.5 - Math.random())
+      .join("");
+
+    const newEquation: EquationObj = {
+      ...equation,
+      id: newId,
+      title: `${equation.title}${DUPLICATE_SUFFIX}`,
     };
 
     const updatedEquations = [...equations, newEquation];
@@ -80,7 +109,13 @@ export const useEquation = () => {
     await LocalStorage.removeItem("equations");
   };
 
-  return { fetchEquations, createEquation, deleteEquation, deleteAllEquations };
+  return {
+    fetchEquations,
+    createEquation,
+    duplicateEquation,
+    deleteEquation,
+    deleteAllEquations,
+  };
 };
 
 const saveEquationsToLocalStorage = async (equations: EquationObj[]) => {
