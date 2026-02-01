@@ -11,7 +11,7 @@ export default function OrganizeEquations() {
 
   const { displayLatexURL } = useLatex();
 
-  const { fetchEquations, duplicateEquation, deleteEquation, deleteAllEquations } = useEquation();
+  const { fetchEquations, duplicateEquation, favoriteEquation, deleteEquation, deleteAllEquations } = useEquation();
 
   // Fetch equations with caching
   const { data: equations = [], isLoading, revalidate } = useCachedPromise(fetchEquations);
@@ -27,6 +27,10 @@ export default function OrganizeEquations() {
 
   const handleDuplicate = async (id: string) => {
     await action(duplicateEquation(id), "Equation Duplicated", "Failed to Duplicate Equation");
+  };
+
+  const handleFavorite = async (id: string) => {
+    await action(favoriteEquation(id), "Equation Favorite", "Failed to Favorite Equation");
   };
 
   const handleDelete = async (id: string) => {
@@ -107,9 +111,9 @@ export default function OrganizeEquations() {
                   />
                   <Action
                     icon={Icon.Heart}
-                    title="Favorite"
+                    title={eq.favorite ? "Unfavorite Equation" : "Favorite Equation"}
                     shortcut={{ modifiers: ["cmd"], key: "f" }}
-                    onAction={() => console.log("Favorite")}
+                    onAction={() => handleFavorite(eq.id)}
                   />
                   <Action
                     icon={Icon.Download}

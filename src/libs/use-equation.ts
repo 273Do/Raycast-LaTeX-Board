@@ -17,6 +17,7 @@ export type EquationObj = {
  *   - fetchEquations: Function to fetch the list of equations.
  *   - createEquation: Function to create a new equation.
  *   - duplicateEquation: Function to duplicate an equation by its ID.
+ *   - favoriteEquation: Function to favorite/unfavorite an equation by its ID.
  *   - deleteEquation: Function to delete an equation by its ID.
  *   - deleteAllEquations: Function to delete all equations.
  */
@@ -92,6 +93,25 @@ export const useEquation = () => {
   };
 
   /**
+   * favorite an equation by its ID.
+   * @param id - The ID of the equation to favorite.
+   */
+  const favoriteEquation = async (id: string): Promise<void> => {
+    const equations = await fetchEquations();
+
+    const equation = equations.find((eq) => eq.id === id) as EquationObj;
+
+    const newEquation: EquationObj = {
+      ...equation,
+      favorite: !equation.favorite,
+    };
+
+    const updatedEquations = equations.map((eq) => (eq.id === id ? newEquation : eq));
+
+    await saveEquationsToLocalStorage(updatedEquations);
+  };
+
+  /**
    * delete an equation by its ID.
    * @param id - The ID of the equation to delete.
    */
@@ -113,6 +133,7 @@ export const useEquation = () => {
     fetchEquations,
     createEquation,
     duplicateEquation,
+    favoriteEquation,
     deleteEquation,
     deleteAllEquations,
   };
