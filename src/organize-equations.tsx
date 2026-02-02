@@ -98,6 +98,12 @@ export default function OrganizeEquations() {
                 <ActionPanel>
                   <Action.CopyToClipboard title="Copy to Clipboard" content={eq.latex} />
                   <Action
+                    icon={Icon.Heart}
+                    title={eq.favorite ? "Unfavorite Equation" : "Favorite Equation"}
+                    shortcut={{ modifiers: ["cmd"], key: "f" }}
+                    onAction={() => handleFavorite(eq.id)}
+                  />
+                  <Action
                     icon={Icon.Pencil}
                     title="Edit Equation"
                     shortcut={{ modifiers: ["cmd"], key: "e" }}
@@ -108,12 +114,6 @@ export default function OrganizeEquations() {
                     title="Duplicate Equation"
                     shortcut={{ modifiers: ["cmd"], key: "d" }}
                     onAction={() => handleDuplicate(eq.id)}
-                  />
-                  <Action
-                    icon={Icon.Heart}
-                    title={eq.favorite ? "Unfavorite Equation" : "Favorite Equation"}
-                    shortcut={{ modifiers: ["cmd"], key: "f" }}
-                    onAction={() => handleFavorite(eq.id)}
                   />
                   <Action
                     icon={Icon.Download}
