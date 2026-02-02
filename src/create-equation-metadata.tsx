@@ -2,6 +2,7 @@ import { Action, ActionPanel, Color, Form, Icon, showToast, Toast, useNavigation
 import { useForm, FormValidation } from "@raycast/utils";
 import { EquationObj, useEquation } from "./libs/use-equation";
 import OrganizeEquations from "./organize-equations";
+import { IGNORE_COLORS } from "./core/constants";
 
 export type EquationFormValues = Pick<Form.Values, "title" | "latex" | "tags">;
 
@@ -55,7 +56,7 @@ export default function AddMetadata({ latex, equation }: AddMetadataProps) {
       <Form.TextField title="Title" placeholder="Enter a title" defaultValue={equation?.title} {...itemProps.title} />
       <Form.TagPicker title="Tag" defaultValue={equation?.tags} {...itemProps.tags}>
         {Object.keys(Color)
-          .filter((key) => !["Dynamic", "Brown", "PrimaryText", "SecondaryText"].includes(key))
+          .filter((key) => !IGNORE_COLORS.includes(key))
           .map((name) => {
             const value = Color[name as keyof typeof Color] as Color;
             return (
