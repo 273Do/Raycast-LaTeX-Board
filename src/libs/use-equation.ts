@@ -17,6 +17,7 @@ export type EquationObj = {
  *   - fetchEquations: Function to fetch the list of equations.
  *   - createEquation: Function to create a new equation.
  *   - duplicateEquation: Function to duplicate an equation by its ID.
+ *   - editEquation: Function to edit an equation by its ID.
  *   - favoriteEquation: Function to favorite/unfavorite an equation by its ID.
  *   - deleteEquation: Function to delete an equation by its ID.
  *   - deleteAllEquations: Function to delete all equations.
@@ -72,7 +73,7 @@ export const useEquation = () => {
   const duplicateEquation = async (id: string): Promise<void> => {
     const equations = await fetchEquations();
 
-    const equation = equations.find((eq) => eq.id === id) as EquationObj;
+    const targetEquation = equations.find((eq) => eq.id === id) as EquationObj;
 
     // Generate a random ID
     const newId = Date.now()
@@ -82,12 +83,37 @@ export const useEquation = () => {
       .join("");
 
     const newEquation: EquationObj = {
-      ...equation,
+      ...targetEquation,
       id: newId,
-      title: `${equation.title}${DUPLICATE_SUFFIX}`,
+      title: `${targetEquation.title}${DUPLICATE_SUFFIX}`,
+      favorite: false,
     };
 
     const updatedEquations = [...equations, newEquation];
+
+    await saveEquationsToLocalStorage(updatedEquations);
+  };
+
+  /**
+   * edit an equation by its ID.
+   * @param id - The ID of the equation to edit.
+   * @param equation - The new equation values.
+   */
+  const editEquation = async (id: string, equation: EquationFormValues): Promise<void> => {
+    const equations = await fetchEquations();
+
+    const targetEquation = equations.find((eq) => eq.id === id) as EquationObj;
+
+    const { title, latex, tags } = equation;
+
+    const newEquation: EquationObj = {
+      ...targetEquation,
+      title,
+      latex,
+      tags,
+    };
+
+    const updatedEquations = equations.map((eq) => (eq.id === id ? newEquation : eq));
 
     await saveEquationsToLocalStorage(updatedEquations);
   };
@@ -99,11 +125,11 @@ export const useEquation = () => {
   const favoriteEquation = async (id: string): Promise<void> => {
     const equations = await fetchEquations();
 
-    const equation = equations.find((eq) => eq.id === id) as EquationObj;
+    const targetEquation = equations.find((eq) => eq.id === id) as EquationObj;
 
     const newEquation: EquationObj = {
-      ...equation,
-      favorite: !equation.favorite,
+      ...targetEquation,
+      favorite: !targetEquation.favorite,
     };
 
     const updatedEquations = equations.map((eq) => (eq.id === id ? newEquation : eq));
@@ -133,6 +159,7 @@ export const useEquation = () => {
     fetchEquations,
     createEquation,
     duplicateEquation,
+    editEquation,
     favoriteEquation,
     deleteEquation,
     deleteAllEquations,

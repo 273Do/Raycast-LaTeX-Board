@@ -1,15 +1,17 @@
-import { Action, ActionPanel, Color, Grid, Icon, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, Color, Grid, Icon, showToast, Toast, useNavigation } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { ORGANIZE_GRID_COLUMNS } from "./core/constants";
 import { useState } from "react";
 import { groupByTags } from "./libs/group-by-tag";
 import { useLatex } from "./libs/use-latex";
-import { useEquation } from "./libs/use-equation";
+import { EquationObj, useEquation } from "./libs/use-equation";
+import CreateEquation from "./create-equation";
 
 export default function OrganizeEquations() {
   const [selectedTag, setSelectedTag] = useState<string>("all");
 
   const { displayLatexURL } = useLatex();
+  const { push } = useNavigation();
 
   const { fetchEquations, duplicateEquation, favoriteEquation, deleteEquation, deleteAllEquations } = useEquation();
 
@@ -31,6 +33,10 @@ export default function OrganizeEquations() {
 
   const handleFavorite = async (id: string) => {
     await action(favoriteEquation(id), "Equation Favorite", "Failed to Favorite Equation");
+  };
+
+  const handleEdit = async (equation: EquationObj) => {
+    push(<CreateEquation equation={equation} />);
   };
 
   const handleDelete = async (id: string) => {
@@ -107,7 +113,7 @@ export default function OrganizeEquations() {
                     icon={Icon.Pencil}
                     title="Edit Equation"
                     shortcut={{ modifiers: ["cmd"], key: "e" }}
-                    onAction={() => console.log("Edit Equation")}
+                    onAction={() => handleEdit(eq)}
                   />
                   <Action
                     icon={Icon.Duplicate}

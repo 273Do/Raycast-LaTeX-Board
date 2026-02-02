@@ -1,29 +1,38 @@
 import { Action, ActionPanel, Color, Form, Icon, showToast, Toast, useNavigation } from "@raycast/api";
 import { useForm, FormValidation } from "@raycast/utils";
-import { useEquation } from "./libs/use-equation";
+import { EquationObj, useEquation } from "./libs/use-equation";
 import OrganizeEquations from "./organize-equations";
 
 export type EquationFormValues = Pick<Form.Values, "title" | "latex" | "tags">;
 
-export default function AddMetadata({ latex }: { latex: string }) {
-  const { createEquation } = useEquation();
+type AddMetadataProps = {
+  latex: string;
+  equation?: EquationObj;
+};
+
+export default function AddMetadata({ latex, equation }: AddMetadataProps) {
+  const { createEquation, editEquation } = useEquation();
   const { push } = useNavigation();
 
   const { handleSubmit, itemProps } = useForm<EquationFormValues>({
     onSubmit(values) {
       try {
-        createEquation({ ...values, latex });
+        if (equation) {
+          editEquation(equation.id, { ...values, latex });
+        } else {
+          createEquation({ ...values, latex });
+        }
 
         showToast({
           style: Toast.Style.Success,
-          title: "Equation Created",
+          title: equation ? "Equation Edited" : "Equation Created",
         });
 
         push(<OrganizeEquations />);
       } catch (error) {
         showToast({
           style: Toast.Style.Failure,
-          title: "Failed to Create Equation",
+          title: equation ? "Failed to Edit Equation" : "Failed to Create Equation",
           message: String(error),
         });
       }
@@ -43,8 +52,8 @@ export default function AddMetadata({ latex }: { latex: string }) {
         </ActionPanel>
       }
     >
-      <Form.TextField title="Title" placeholder="Enter a title" {...itemProps.title} />
-      <Form.TagPicker title="Tag" {...itemProps.tags}>
+      <Form.TextField title="Title" placeholder="Enter a title" defaultValue={equation?.title} {...itemProps.title} />
+      <Form.TagPicker title="Tag" defaultValue={equation?.tags} {...itemProps.tags}>
         {Object.entries(Color).map(([name, value]) => (
           <Form.TagPicker.Item key={name} value={name} title={name} icon={{ source: Icon.Circle, tintColor: value }} />
         ))}
