@@ -2,11 +2,14 @@ import { Color, LocalStorage } from "@raycast/api";
 import { EquationFormValues } from "../create-equation-metadata";
 import { DUPLICATE_SUFFIX } from "../core/constants";
 
+export type ColorKey = Exclude<keyof typeof Color, "Dynamic">;
+export type ColorValue = (typeof Color)[ColorKey];
+
 export type EquationObj = {
   id: string;
   title: string;
   latex: string;
-  tags: Color[];
+  tags: ColorValue[];
   favorite: boolean;
 };
 
@@ -175,7 +178,7 @@ const demoEquations: EquationObj[] = [
     id: "0",
     title: "Quadratic Formula",
     latex: "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
-    tags: [Color.Blue],
+    tags: [Color.Blue, Color.Purple],
     favorite: false,
   },
   { id: "1", title: "Euler's Identity", latex: "e^{i\\pi} + 1 = 0", tags: [Color.Purple], favorite: true },

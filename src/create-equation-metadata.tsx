@@ -54,9 +54,19 @@ export default function AddMetadata({ latex, equation }: AddMetadataProps) {
     >
       <Form.TextField title="Title" placeholder="Enter a title" defaultValue={equation?.title} {...itemProps.title} />
       <Form.TagPicker title="Tag" defaultValue={equation?.tags} {...itemProps.tags}>
-        {Object.entries(Color).map(([name, value]) => (
-          <Form.TagPicker.Item key={name} value={name} title={name} icon={{ source: Icon.Circle, tintColor: value }} />
-        ))}
+        {Object.keys(Color)
+          .filter((key) => !["Dynamic", "Brown", "PrimaryText", "SecondaryText"].includes(key))
+          .map((name) => {
+            const value = Color[name as keyof typeof Color] as Color;
+            return (
+              <Form.TagPicker.Item
+                key={name}
+                value={value}
+                title={name}
+                icon={{ source: Icon.Circle, tintColor: value }}
+              />
+            );
+          })}
       </Form.TagPicker>
       <Form.Separator />
       <Form.Description title="LaTeX" text={latex} />

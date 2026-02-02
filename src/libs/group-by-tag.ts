@@ -1,17 +1,11 @@
-import { Color } from "@raycast/api";
-import { EquationObj } from "./use-equation";
+import { ColorValue, EquationObj } from "./use-equation";
 
-export const groupByTags = (items: EquationObj[]): Record<string, EquationObj[]> => {
-  return items.reduce(
-    (acc, item) => {
-      const tagName = Object.entries(Color).find(([, value]) => value === item.tags)?.[0] || "Other";
+export const getUniqueTags = (items: EquationObj[]): ColorValue[] => {
+  const tagSet = new Set<ColorValue>();
 
-      if (!acc[tagName]) acc[tagName] = [];
+  items.forEach((item) => {
+    item.tags.forEach((tag) => tagSet.add(tag));
+  });
 
-      acc[tagName].push(item);
-
-      return acc;
-    },
-    {} as Record<string, EquationObj[]>,
-  );
+  return Array.from(tagSet);
 };
