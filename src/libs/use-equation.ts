@@ -43,6 +43,7 @@ export const useEquation = () => {
 
   /**
    * create a new equation and save it to local storage.
+   * @param equation - The equation values.
    */
   const createEquation = async (equation: EquationFormValues): Promise<void> => {
     const equations = await fetchEquations();

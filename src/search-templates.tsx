@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Grid, Icon, useNavigation } from "@raycast/api";
+import { Action, ActionPanel, Grid, Icon, showToast, Toast, useNavigation } from "@raycast/api";
 import { SEARCH_GRID_COLUMNS } from "./core/constants";
 import { templates } from "./core/templates";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import CreateEquation from "./create-equation";
 export default function Command() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  const { displayLatexURL } = useLatex();
+  const { displayLatexURL, downloadLatexImage } = useLatex();
 
   const { push } = useNavigation();
 
@@ -27,6 +27,23 @@ export default function Command() {
     };
 
     push(<CreateEquation equation={equation} />);
+  };
+
+  const handleExport = async (title: string, latex: string) => {
+    try {
+      await downloadLatexImage(title, latex);
+
+      showToast({
+        style: Toast.Style.Success,
+        title: "Equation Image Exported",
+      });
+    } catch (error) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to Export Equation Image",
+        message: String(error),
+      });
+    }
   };
 
   return (
@@ -56,12 +73,14 @@ export default function Command() {
                   <Action
                     icon={Icon.PlusCircle}
                     title="Create New Equation from Template"
+                    shortcut={{ modifiers: ["cmd"], key: "d" }}
                     onAction={() => handleCreate(title, latex)}
                   />
                   <Action
                     icon={Icon.Download}
                     title="Export Image"
-                    onAction={() => console.log("Export ImagDEFAULT_ICON")}
+                    shortcut={{ modifiers: ["cmd"], key: "s" }}
+                    onAction={() => handleExport(title, latex)}
                   />
                 </ActionPanel>
               }

@@ -10,7 +10,8 @@ import CreateEquation from "./create-equation";
 export default function OrganizeEquations() {
   const [selectedTag, setSelectedTag] = useState<string>("all");
 
-  const { displayLatexURL } = useLatex();
+  const { displayLatexURL, downloadLatexImage } = useLatex();
+
   const { push } = useNavigation();
 
   const { fetchEquations, duplicateEquation, favoriteEquation, deleteEquation, deleteAllEquations } = useEquation();
@@ -27,16 +28,20 @@ export default function OrganizeEquations() {
         ? equations.filter((eq) => eq.favorite)
         : equations.filter((eq) => eq.tags.includes(selectedTag as ColorValue));
 
-  const handleDuplicate = async (id: string) => {
-    await action(duplicateEquation(id), "Equation Duplicated", "Failed to Duplicate Equation");
+  const handleEdit = async (equation: EquationObj) => {
+    push(<CreateEquation equation={equation} />);
   };
 
   const handleFavorite = async (id: string) => {
     await action(favoriteEquation(id), "Equation Favorite", "Failed to Favorite Equation");
   };
 
-  const handleEdit = async (equation: EquationObj) => {
-    push(<CreateEquation equation={equation} />);
+  const handleDuplicate = async (id: string) => {
+    await action(duplicateEquation(id), "Equation Duplicated", "Failed to Duplicate Equation");
+  };
+
+  const handleExport = async (title: string, latex: string) => {
+    action(downloadLatexImage(title, latex), "Equation Image Exported", "Failed to Export Equation Image");
   };
 
   const handleDelete = async (id: string) => {
@@ -127,7 +132,7 @@ export default function OrganizeEquations() {
                 icon={Icon.Download}
                 title="Export Image"
                 shortcut={{ modifiers: ["cmd"], key: "s" }}
-                onAction={() => console.log("Export Image")}
+                onAction={() => handleExport(eq.title, eq.latex)}
               />
               <ActionPanel.Section>
                 <Action
