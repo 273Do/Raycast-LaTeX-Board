@@ -18,7 +18,7 @@ export default function AddMetadata({ latex, equation }: AddMetadataProps) {
   const { handleSubmit, itemProps } = useForm<EquationFormValues>({
     onSubmit(values) {
       try {
-        if (equation) {
+        if (equation && equation.id) {
           editEquation(equation.id, { ...values, latex });
         } else {
           createEquation({ ...values, latex });
