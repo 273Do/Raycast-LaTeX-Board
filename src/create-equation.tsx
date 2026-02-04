@@ -1,4 +1,4 @@
-import { Action, ActionPanel, List, useNavigation } from "@raycast/api";
+import { Action, ActionPanel, Icon, List, useNavigation } from "@raycast/api";
 import { useState } from "react";
 import { useLatex } from "./libs/use-latex";
 import AddMetadata from "./create-equation-metadata";
@@ -19,7 +19,7 @@ export default function CreateEquation({ equation }: CreateEquationProps) {
   return (
     <List searchBarPlaceholder="Enter LaTeX code..." searchText={latex} onSearchTextChange={setLatex}>
       <List.EmptyView
-        icon={latex ? imageUrl : undefined}
+        icon={latex ? imageUrl : Icon.PlusMinusDivideMultiply}
         title={latex ? "" : "Enter LaTeX Code"}
         description={latex ? undefined : "Type LaTeX code in the search bar to preview"}
         actions={
