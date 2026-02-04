@@ -33,7 +33,7 @@ export default function OrganizeEquations() {
   };
 
   const handleFavorite = async (id: string) => {
-    await action(favoriteEquation(id), "Equation Favorite", "Failed to Favorite Equation");
+    await action(favoriteEquation(id), "Equation Favorited", "Failed to Favorite Equation");
   };
 
   const handleDuplicate = async (id: string) => {
@@ -49,7 +49,7 @@ export default function OrganizeEquations() {
   };
 
   const handleDeleteAll = async () => {
-    await action(deleteAllEquations(), "All Equation Deleted", "Failed to Delete All Equations");
+    await action(deleteAllEquations(), "All Equations Deleted", "Failed to Delete All Equations");
   };
 
   const action = async (actionPromise: Promise<void>, successTitle: string, failureTitle: string) => {
@@ -76,7 +76,7 @@ export default function OrganizeEquations() {
       isLoading={isLoading}
       inset={Grid.Inset.Small}
       columns={ORGANIZE_GRID_COLUMNS}
-      searchBarPlaceholder="Search Equations"
+      searchBarPlaceholder="Search equations"
       searchBarAccessory={
         <Grid.Dropdown tooltip="Filter by Tag" onChange={(v) => setSelectedTag(v)} value={selectedTag}>
           <Grid.Dropdown.Item key="all" title="All Tags" value="all" />

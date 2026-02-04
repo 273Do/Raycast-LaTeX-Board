@@ -50,9 +50,9 @@ export default function Command() {
     <Grid
       inset={Grid.Inset.Small}
       columns={SEARCH_GRID_COLUMNS}
-      searchBarPlaceholder="Search LaTeX Templates"
+      searchBarPlaceholder="Search LaTeX templates"
       searchBarAccessory={
-        <Grid.Dropdown tooltip="Equation Category" onChange={(v) => setSelectedCategory(v)} value={selectedCategory}>
+        <Grid.Dropdown tooltip="Filter by Category" onChange={(v) => setSelectedCategory(v)} value={selectedCategory}>
           <Grid.Dropdown.Item key="all" title="All Categories" value="all" />
           {Object.keys(templates).map((cat) => (
             <Grid.Dropdown.Item key={cat} title={cat} value={cat} />
